@@ -16,7 +16,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomePage(),
-      theme: ref.watch(themeNotifierProvider),
+      theme: ref.watch(themeNotifierProvider).value,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_demo/theme/theme.dart';
 
 part 'theme_notifier.g.dart';
@@ -15,15 +16,28 @@ class ThemeNotifier extends _$ThemeNotifier {
   }
 
   @override
-  ThemeData build() {
-    return _themeData;
+  Future<ThemeData> build() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final isDarkMode = prefs.getBool("isDarkMode");
+
+    if (isDarkMode == null || isDarkMode == false) {
+      print("lightmode initially");
+      return _themeData;
+    } else {
+      _themeData = darkMode;
+      return _themeData;
+    }
   }
 
-  void toggleTheme() {
-    if (state == lightMode) {
-      state = darkMode;
+  void toggleTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (state == AsyncValue.data(lightMode)) {
+      state = AsyncValue.data(darkMode);
+      prefs.setBool("isDarkMode", true);
     } else {
-      state = lightMode;
+      state = AsyncValue.data(lightMode);
+      prefs.setBool("isDarkMode", false);
     }
   }
 }
